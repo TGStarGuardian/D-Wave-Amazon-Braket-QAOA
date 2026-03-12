@@ -58,7 +58,7 @@ def bqm_to_braket_hamiltonian(bqm: dimod.BinaryQuadraticModel):
     h, J, offset = bqm.to_ising()
 
     # Fix variable ordering
-    variables = sorted(bqm.variables)
+    variables = bqm.variables
     index = {v: i for i, v in enumerate(variables)}
 
     observable = None
@@ -257,7 +257,7 @@ def evaluate_bitstring(bitstring, hamiltonian):
     return value
     
 def qaoa(hamiltonian, num_qubits, p = 1):
-	result = run_qaoa(observable, num_qubits, p=p)
+	result = run_qaoa(hamiltonian, num_qubits, p=p)
 
 	print("Optimal parameters:", result.x)
 	print("Minimum expectation:", result.fun)
@@ -273,35 +273,6 @@ def qaoa(hamiltonian, num_qubits, p = 1):
 	optimal_energy = evaluate_bitstring(optimal_bitstring, hamiltonian)
 	
 	return optimal_bitstring, optimal_energy
-
-
-# Example BQM
-bqm = dimod.BinaryQuadraticModel(
-    {'x': -1, 'y': -2},
-    {('x', 'y'): 3},
-    0,
-    dimod.BINARY
-)
-
-h, J, offset = bqm.to_ising()
-
-print(h)
-print(J)
-print(offset)
-
-observable, offset, variables = bqm_to_braket_hamiltonian(bqm)
-
-print("Variables:", variables)
-print("Offset:", offset)
-print("Hamiltonian:", observable_to_str(observable, variables))
-
-num_qubits = len(variables)
-p = 2
-
-optimal_bitstring, optimal_energy = qaoa(observable, num_qubits, p)
-
-print("Optimal assignment:", optimal_bitstring)
-print("Optimal energy:", optimal_energy + offset)
-
-
-
+	
+	
+	
